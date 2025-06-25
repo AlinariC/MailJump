@@ -2,6 +2,8 @@ using System;
 using System.IO.Pipes;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Collections.Generic;
+using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace MailJumpTray
 {
@@ -50,12 +52,29 @@ namespace MailJumpTray
 
         private void HandleMAPIMessage(string message)
         {
-            // message expected in JSON: { "to": "...", "subject": "...", "body": "...", "attachment": "..." }
+            // message expected in JSON: { "to": "...", "subject": "...", "body": "...", "attachments": ["..."] }
             try
             {
-                var mapi = System.Text.Json.JsonSerializer.Deserialize<MAPIMessage>(message);
-                var args = $"mailto:{mapi?.To}?subject={Uri.EscapeDataString(mapi?.Subject ?? string.Empty)}&body={Uri.EscapeDataString(mapi?.Body ?? string.Empty)}";
-                Process.Start(new ProcessStartInfo(args) { UseShellExecute = true });
+                var options = new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true };
+                var mapi = System.Text.Json.JsonSerializer.Deserialize<MAPIMessage>(message, options);
+                if (mapi == null) return;
+
+                var outlook = new Outlook.Application();
+                var mail = (Outlook.MailItem)outlook.CreateItem(Outlook.OlItemType.olMailItem);
+                mail.To = mapi.To;
+                mail.Subject = mapi.Subject ?? string.Empty;
+                mail.Body = mapi.Body ?? string.Empty;
+                if (mapi.Attachments != null)
+                {
+                    foreach (var path in mapi.Attachments)
+                    {
+                        if (!string.IsNullOrWhiteSpace(path))
+                        {
+                            try { mail.Attachments.Add(path); } catch { }
+                        }
+                    }
+                }
+                mail.Display(false);
             }
             catch (Exception ex)
             {
@@ -71,5 +90,5 @@ namespace MailJumpTray
         }
     }
 
-    public record MAPIMessage(string To, string Subject, string Body, string? Attachment);
+    public record MAPIMessage(string To, string? Subject, string? Body, System.Collections.Generic.List<string>? Attachments);
 }
