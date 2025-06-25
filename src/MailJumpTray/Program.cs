@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Collections.Generic;
+using System.Drawing; // for SystemIcons
+using System.IO;      // for StreamReader
 using Outlook = Microsoft.Office.Interop.Outlook;
 
 namespace MailJumpTray
