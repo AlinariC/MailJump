@@ -14,7 +14,27 @@ extern "C" ULONG FAR PASCAL MAPISendMail(LHANDLE lhSession, ULONG ulUIParam,
         oss << "\"body\":\"" << lpMessage->lpszNoteText << "\",";
     if (lpMessage && lpMessage->lpRecips && lpMessage->nRecipCount > 0)
         oss << "\"to\":\"" << lpMessage->lpRecips[0].lpszAddress << "\",";
-    oss << "\"attachment\":null}";
+    oss << "\"attachments\":[";
+    if (lpMessage && lpMessage->lpFiles && lpMessage->nFileCount > 0)
+    {
+        for (ULONG i = 0; i < lpMessage->nFileCount; ++i)
+        {
+            if (i > 0) oss << ',';
+            const char* path = lpMessage->lpFiles[i].lpszPathName;
+            if (path)
+            {
+                std::string p = path;
+                std::string escaped;
+                for (char c : p)
+                {
+                    if (c == '\\' || c == '"') escaped += '\\';
+                    escaped += c;
+                }
+                oss << '"' << escaped << '"';
+            }
+        }
+    }
+    oss << "]}";
     std::string json = oss.str();
     HANDLE hPipe = CreateFileA(R"\\.\pipe\MailJumpPipe", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
     if (hPipe != INVALID_HANDLE_VALUE)
