@@ -11,7 +11,7 @@ The stub only implements the features required for Word's "Send to Mail Recipien
 
 ## Building
 
-1. **MailJumpTray** requires the .NET 6 SDK or later. Build the project with `dotnet build` targeting `x64`.
+1. **MailJumpTray** requires the .NET 9 SDK or later. Build the project with `dotnet build` targeting `x64`.
 2. **MAPIStub** can be built with any 64-bit Visual Studio toolchain using the provided `MAPIStub.def` to export `MAPISendMail`.
 
 After building, place `MAPI32.dll` from the `MAPIStub` project somewhere in your `PATH` or alongside Word so that it is loaded when a MAPI call is made. Run `MailJumpTray.exe` to start the tray application before using Word's email features.
