@@ -31,3 +31,15 @@ cd scripts
 
 The installer also places `uninstall.ps1` in the install directory so you can remove
 MailJump by running that script later.
+
+For distributing MailJump as a single executable installer you can build the
+NSIS package located in the `installer` folder. Install the NSIS toolset and
+run `makensis` to generate `MailJumpInstaller.exe`:
+
+```bash
+cd installer
+makensis MailJumpInstaller.nsi
+```
+
+The resulting `MailJumpInstaller.exe` installs MailJump to
+`C:\Program Files\MailJump` and registers it as the default MAPI client.

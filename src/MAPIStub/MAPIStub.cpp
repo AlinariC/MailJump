@@ -4,7 +4,7 @@
 #include <fstream>
 #include <sstream>
 
-extern "C" ULONG FAR PASCAL MAPISendMail(LHANDLE lhSession, ULONG ulUIParam,
+extern "C" ULONG FAR PASCAL MAPISendMail(LHANDLE lhSession, ULONG_PTR ulUIParam,
     lpMapiMessage lpMessage, FLAGS flFlags, ULONG ulReserved)
 {
     std::ostringstream oss;
@@ -36,7 +36,7 @@ extern "C" ULONG FAR PASCAL MAPISendMail(LHANDLE lhSession, ULONG ulUIParam,
     }
     oss << "]}";
     std::string json = oss.str();
-    HANDLE hPipe = CreateFileA(R"\\.\pipe\MailJumpPipe", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
+    HANDLE hPipe = CreateFileA(R"(\\.\pipe\MailJumpPipe)", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, 0, NULL);
     if (hPipe != INVALID_HANDLE_VALUE)
     {
         DWORD written;
