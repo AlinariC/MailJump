@@ -29,10 +29,11 @@ namespace MailJumpTray
         private readonly NamedPipeServerStream _pipe;
         public TrayNotifier()
         {
+            var iconPath = Path.Combine(AppContext.BaseDirectory, "icons", "mailjump-64.ico");
             _icon = new NotifyIcon
             {
                 Text = "MailJump",
-                Icon = SystemIcons.Application,
+                Icon = File.Exists(iconPath) ? new Icon(iconPath) : SystemIcons.Application,
                 Visible = true,
                 ContextMenuStrip = new ContextMenuStrip()
             };
