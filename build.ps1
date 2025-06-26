@@ -52,7 +52,7 @@ if (-not (Test-Path $vcvars)) {
 }
 $buildCmd = 'cl.exe /nologo /LD MAPIStub.cpp /FeMAPI32.dll /link /DEF:MAPIStub.def'
 Push-Location 'src/MAPIStub'
-$cmdString = "call `\"$vcvars`\" && $buildCmd"
+$cmdString = "call `"$vcvars`" && $buildCmd"
 cmd /c $cmdString
 Pop-Location
 
