@@ -17,3 +17,17 @@ The stub only implements the features required for Word's "Send to Mail Recipien
 After building, place `MAPI32.dll` from the `MAPIStub` project somewhere in your `PATH` or alongside Word so that it is loaded when a MAPI call is made. Run `MailJumpTray.exe` to start the tray application before using Word's email features.
 
 This project is a basic proof of concept and now supports multiple attachments, though it still only handles a single primary recipient.
+
+## Installer
+
+A PowerShell installer script is available in the `scripts` folder to simplify deployment.
+Run the script after building both modules to copy them to `C:\Program Files\MailJump`,
+set MailJump as the default MAPI client and register uninstall information.
+
+```powershell
+cd scripts
+./install.ps1
+```
+
+The installer also places `uninstall.ps1` in the install directory so you can remove
+MailJump by running that script later.
