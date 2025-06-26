@@ -41,10 +41,19 @@ dotnet publish './src/MailJumpTray/MailJumpTray.csproj' -c Release -r win-x64 --
 Write-Host 'Building MAPIStub...'
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio/Installer/vswhere.exe'
 $installPath = & $vswhere -latest -products '*' -requires Microsoft.Component.MSBuild -property installationPath
-$vcvars = Join-Path $installPath 'VC/Auxiliary/Build/vcvars64.bat'
+if (-not $installPath) {
+    Write-Error 'Visual Studio Build Tools not found. Install the C++ workload and try again.'
+    exit 1
+}
+$vcvars = Join-Path $installPath 'VC\Auxiliary\Build\vcvars64.bat'
+if (-not (Test-Path $vcvars)) {
+    Write-Error "vcvars64.bat not found at $vcvars"
+    exit 1
+}
 $buildCmd = 'cl.exe /nologo /LD MAPIStub.cpp /FeMAPI32.dll /link /DEF:MAPIStub.def'
 Push-Location 'src/MAPIStub'
-cmd /c "`"$vcvars`" && $buildCmd"
+$cmdString = "call `\"$vcvars`\" && $buildCmd"
+cmd /c $cmdString
 Pop-Location
 
 # Build NSIS installer
