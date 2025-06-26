@@ -2,6 +2,8 @@
 
 Name "MailJump"
 OutFile "MailJumpInstaller.exe"
+Icon "../src/MailJumpTray/icons/mailjump-128.ico"
+UninstallIcon "../src/MailJumpTray/icons/mailjump-128.ico"
 InstallDir "$PROGRAMFILES\MailJump"
 RequestExecutionLevel admin
 
